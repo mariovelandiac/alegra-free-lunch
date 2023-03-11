@@ -1,7 +1,7 @@
 const config = require('./../../../config');
 const marketPlaceUrl = config.marketPlace.url;
 const fetch = require('node-fetch');
-let newStock = {};
+
 
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
 module.exports = function (injectedStore) {
@@ -12,53 +12,74 @@ module.exports = function (injectedStore) {
 
   async function getIngredients(ingredients) {
 
+
     let {stock, lack} = await areEnough(ingredients); // stock regresa un objeto listeral con la cantidad restante de los ingredientes en la bodega en caso de ser suficiente, lack retorna en un array los faltantes en caso de que así sea
+    // En caso de que no falte nada
     if (lack.length === 0) {
       const response = await store.update(stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
       return response
     };
-    console.log('lack',lack);
+
     // de acá en adelante solamente nos centraremos en los faltantes
-    // si con el pedido se termina un recurso, de hace el pedido y se actualiza la base de datos
-    let ingredientName, boughtIngredient, lackOfIngredient, ingredientStock;
-
-
-    // revisar, cuando hay dos o más elementos en lack, algo empieza a fallar
+    // Declaración de variables a usar dentro de las iteraciones
+    let ingredientName, boughtIngredient, lackOfIngredient, ingredientStock
+    let boughtStock = [];
+    // Abastesimiento de ingredientes faltantes con una iteración de promesas
     await Promise.allSettled(
+      // Lack es un array en donde el iéismo elemento corresponde con el ingrediente que falta y la cantidad que falta
       lack.map(async item => {
         ingredientName = item[0];
-        console.log('ingredientName', ingredientName)
         lackOfIngredient = item[1];
-        boughtIngredient = await buyIngredient(ingredientName); // ingrediente y cantidad requerida, la respuesta el cantidad comprada, mayor que cero
-        while (boughtIngredient <=   lackOfIngredient) { // Se garantiza que la cantidad comprada sea mayor a la requerida
-          console.log(`Repited bought of ${ingredientName}`, boughtIngredient)
-          boughtIngredient = boughtIngredient + await buyIngredient(ingredientName);
-        };
-
-        ingredientStock = await boughtIngredient - lackOfIngredient;
-        console.log(`Nuevo numero de ${ingredientName} en Stock`, ingredientStock);
-
-        stock[ingredientName] = ingredientStock
+        // está función retorna una cantidad de ingredientes que sea mayor a la que es requerida
+        boughtIngredient = await buyIngredient(ingredientName, lackOfIngredient);
+        ingredientStock = await boughtIngredient - lackOfIngredient; // se resta lo comprado menos lo necesitado para retornar al stock
+        // bougthStock es un array en donde el íesimo elmento corresponde al iésimo elemento que se acabó, pero la nueva cantidad tras haber comprado más
+        boughtStock.push(ingredientStock);
       })
     );
 
-    console.log('Stock actualizado', stock)
+
+
+      // array con todos los ingredientes faltantes
+      const ingredientLack = lack.flat().filter(item => typeof item === 'string');
+      // nuevo Objeto con los valores comprados según el ingrediente
+
+      const newStock = {};
+      ingredientLack.map(async function (item, i) {
+        return newStock[item] = boughtStock[i]; // asociación del ingrediente faltante con la cantidad restante en el stock
+      });
+
+      console.log('restante de las compras nuevas', newStock);
+      stock = {
+        ...stock,
+        ...newStock
+      };
+      // se actualiza la base de datos
     const response = await store.update(stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
     return response
   };
 
+  async function buyIngredient(ingredient, lackOfIngredient) {
 
-  async function buyIngredient(ingredient) {
-    const response = await fetch(`${marketPlaceUrl}/?ingredient=${ingredient}`);
-    let {quantitySold} = await response.json();
-    console.log(`Compra de ${quantitySold} unidades de ${ingredient}`);
-    if (quantitySold === 0) { // uso de recurrencia para garantizar que se retorna un valor diferente de cero
-      quantitySold = await buyIngredient(ingredient);
-      return quantitySold;
-    } else {
-      return quantitySold
-    }
+    let quantitySold = await getIngredientOnMarketPlace(ingredient); // Se compra
+
+    if (quantitySold > lackOfIngredient) {
+        return quantitySold
+    };
+    // Si es cero o menor que lo necesitado, se vuelve a intentar hasta que sea suficiente
+    while (quantitySold <= lackOfIngredient) {
+      quantitySold += await getIngredientOnMarketPlace(ingredient);
+    };
+    return quantitySold
   }
+
+  async function getIngredientOnMarketPlace(ingredient) {
+    console.time(`fetch of ${ingredient}`);
+    const response = await fetch(`${marketPlaceUrl}/?ingredient=${ingredient}`); // petición a la plaza de mercado
+    console.timeEnd(`fetch of ${ingredient}`);
+    const {quantitySold} = await response.json(); // paso a Json
+    return quantitySold;
+  };
 
   async function areEnough(ingredients) {
     const available = await store.list();
@@ -79,15 +100,14 @@ module.exports = function (injectedStore) {
         stock[recipeName] = difference; // Objeto literal de elementos consumidos por la receta
       };
     });
+
+    // acá se puede retornar un array más,con la cantidad faltante y lo que hay que pedir
     return {
       stock,
       lack
     };
 
   };
-
-
-
 
   return {
     getIngredients

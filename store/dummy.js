@@ -14,7 +14,7 @@ let db = {
 };
 
 async function list() {
-  console.log('Obtener base de Datos', db.ingredients)
+  console.log('Obtener base de Datos', db.ingredients);
   return db.ingredients
 };
 
@@ -23,7 +23,7 @@ async function update(changes) {
     ...db.ingredients,
     ...changes
   };
-  setTimeout(() => {console.log('Base de datos actualizada', db.ingredients)});
+  console.log('Base de datos actualizada', db.ingredients);
   return db.ingredients
 }
 
