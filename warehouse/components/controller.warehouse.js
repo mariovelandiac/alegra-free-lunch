@@ -1,4 +1,4 @@
-const config = require('./../../../config');
+const config = require('./../../config');
 const marketPlaceUrl = config.marketPlace.url;
 const fetch = require('node-fetch');
 
@@ -49,7 +49,6 @@ module.exports = function (injectedStore) {
         return newStock[item] = boughtStock[i]; // asociación del ingrediente faltante con la cantidad restante en el stock
       });
 
-      console.log('restante de las compras nuevas', newStock);
       stock = {
         ...stock,
         ...newStock
@@ -57,28 +56,6 @@ module.exports = function (injectedStore) {
       // se actualiza la base de datos
     const response = await store.update(stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
     return response
-  };
-
-  async function buyIngredient(ingredient, lackOfIngredient) {
-
-    let quantitySold = await getIngredientOnMarketPlace(ingredient); // Se compra
-
-    if (quantitySold > lackOfIngredient) {
-        return quantitySold
-    };
-    // Si es cero o menor que lo necesitado, se vuelve a intentar hasta que sea suficiente
-    while (quantitySold <= lackOfIngredient) {
-      quantitySold += await getIngredientOnMarketPlace(ingredient);
-    };
-    return quantitySold
-  }
-
-  async function getIngredientOnMarketPlace(ingredient) {
-    console.time(`fetch of ${ingredient}`);
-    const response = await fetch(`${marketPlaceUrl}/?ingredient=${ingredient}`); // petición a la plaza de mercado
-    console.timeEnd(`fetch of ${ingredient}`);
-    const {quantitySold} = await response.json(); // paso a Json
-    return quantitySold;
   };
 
   async function areEnough(ingredients) {
@@ -106,8 +83,33 @@ module.exports = function (injectedStore) {
       stock,
       lack
     };
-
   };
+
+    async function buyIngredient(ingredient, lackOfIngredient) {
+
+      let quantitySold = await getIngredientOnMarketPlace(ingredient); // Se compra
+
+      if (quantitySold > lackOfIngredient) {
+          return quantitySold
+      };
+      // Si es cero o menor que lo necesitado, se vuelve a intentar hasta que sea suficiente
+      while (quantitySold <= lackOfIngredient) {
+        quantitySold += await getIngredientOnMarketPlace(ingredient);
+      };
+      return quantitySold
+    }
+
+    async function getIngredientOnMarketPlace(ingredient) {
+      const url = `${marketPlaceUrl}/?ingredient=${ingredient}`
+      const response = await fetch(url); // petición a la plaza de mercado
+
+      if (response.status === 200) {
+        const {quantitySold} = await response.json(); // paso a Json
+        return quantitySold;
+      } else {
+        throw new Error(`No se puede establacer conexión con ${url}`)
+      };
+    };
 
   return {
     getIngredients

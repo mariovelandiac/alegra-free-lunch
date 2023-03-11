@@ -1,5 +1,6 @@
 const selectOneDish = require('../../utils/select.one.dish');
-const warehouse = require('./../warehouse');
+const fetch = require('node-fetch');
+const config = require('./../../../config');
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
 module.exports = function (injectedStore) {
   const store = injectedStore;
@@ -10,18 +11,39 @@ module.exports = function (injectedStore) {
 
   async function makeDish() {
     const {details} = selectOneDish(); // se escoge un plato al azar entre las recetas disponibles en ./utils/select.one.dish
-    console.log('Ingredientes Pedidos:', details.ingredients);
-    const ingredients = await warehouse.getIngredients(details.ingredients); // Obtener ingredientes de la bodega
-    if (ingredients) {
+    const warehouseURL = `http://${config.warehouse.host}:${config.warehouse.port}/get-ingredients`
+    const ingredientsRequired = details.ingredients;
+    const params = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(ingredientsRequired)
+    }
+    const response = await fetch(warehouseURL, params); // Obtener ingredientes de la bodega
+    const {error, status, body} = await response.json();
+
+    if (error) {
+      throw new Error(error)
+    }
+
+    if (!body) {
+      throw new Error('No se puede prerparar el plato')
+    }
+
+    if (body && status === 200) {
+      const ingredients = body;
       const dish = cook(details.name); // se cocinan los ingredientes
-      return dish
-    } else {
-      throw new Error(`No se pudo preparar el plato ${details.name}`);
+      return {
+        dish,
+        ingredientsRequired,
+        ingredients
+      }
     }
   };
 
-  function cook(dish) {
-    return `Disfrute de su plato: ${dish}`;
+  function cook(name) {
+    return `Disfrute de su plato: ${name}`;
   }
 
   return {

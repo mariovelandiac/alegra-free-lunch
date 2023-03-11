@@ -1,4 +1,4 @@
-const store = require('./../../../store/dummy');
+const store = require('./../../store/dummy');
 const controller = require('./controller.warehouse');
 
 module.exports = controller(store);
