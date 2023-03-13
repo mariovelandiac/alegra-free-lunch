@@ -5,7 +5,9 @@ const controller = require('./index'); // conexión a base de datos
 
 
 router.post('/get-ingredients', getIngredients);
+router.get('/orders-history', ordersHistory);
 
+// Otras peticiones
 router.get('/:else', function (req, res) {
   response.success(req, res, 'Not Found', 404);
 });
@@ -22,6 +24,14 @@ async function getIngredients(req, res, next) {
   }
 };
 
+async function ordersHistory(req, res, next) {
+  try {
+    const orders = await controller.getMarketplaceHistory();
+    response.sucess(req, res, orders, 200);
+  } catch (e) {
+    next(e)
+  }
+};
 
 
 module.exports = router

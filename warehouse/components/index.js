@@ -1,5 +1,5 @@
 const store = require('./../../store/dummy');
-const controller = require('./controller.warehouse');
+const controller = require('./controller');
 
 module.exports = controller(store);
 

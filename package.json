@@ -1,10 +1,11 @@
 {
   "name": "alegra-test",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "test made for alegra",
   "main": "api/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "pm2 start api/index.js --name api --watch; pm2 start warehouse/index.js --name warehouse --watch"
   },
   "repository": {
     "type": "git",
@@ -28,8 +29,10 @@
     "prettier": "^2.8.4"
   },
   "dependencies": {
+    "@hapi/boom": "^10.0.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "node-fetch": "^2.6.9"
+    "node-fetch": "^2.6.9",
+    "uuid": "^9.0.0"
   }
 }

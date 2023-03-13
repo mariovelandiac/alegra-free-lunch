@@ -8,7 +8,7 @@ const config = {
       url: process.env.MARKETPLACE_URL
     },
     warehouse: {
-      host: process.env.WAREHOUSE_HOST || 'localhost',
+      host: process.env.WAREHOUSE_HOST || 'http://localhost',
       port: process.env.WAREHOUSE_PORT || 3001
     }
 }
