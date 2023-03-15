@@ -12,7 +12,7 @@ class OrderIngredient {
     this.name = name;
     this.quantitySold;
     this.dishId = dishId;
-    this.createdAt = new Date();
+    this.createdAt = new Date().toString();
     this.status;
     this.purchased;
   };

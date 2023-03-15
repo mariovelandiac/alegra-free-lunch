@@ -9,7 +9,7 @@ class Dish {
     this.id = v4(); // id del plato pedido
     this.name = ''; // nombre del plato
     this.ingredients = {}; // ingredientes del plato
-    this.delivered = "f"; // por defecto el plato aleatorio no se entrega cuando se genera, solo hasta que se obtienen los ingredientes
+    this.delivered = "false"; // por defecto el plato aleatorio no se entrega cuando se genera, solo hasta que se obtienen los ingredientes
     this.createdAt = new Date().toString();
   };
 
@@ -24,7 +24,7 @@ class Dish {
   };
 
   deliver() {
-    this.delivered = "t";
+    this.delivered = "true";
   };
 
 

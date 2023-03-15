@@ -1,6 +1,6 @@
 {
   "name": "alegra-test",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "test made for alegra",
   "main": "api/index.js",
   "scripts": {

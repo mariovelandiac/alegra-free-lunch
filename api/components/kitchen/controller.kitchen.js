@@ -34,7 +34,7 @@ function controller(injectedStore) {
   };
 
   async function getQueue() {
-    const queue = await store.getByIndex(DISH_ENTITY, 'f');
+    const queue = await store.getByIndex(DISH_ENTITY, 'false');
     return queue
   };
 

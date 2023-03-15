@@ -45,7 +45,7 @@ async function list(partitionKey, limit = 20) {
       "#name": "name"
     },
     KeyConditionExpression: "entity = :pk",
-    limit: limit,
+    Limit: limit,
     ProjectionExpression: "#name, ingredients, delivered, createdAt, quantitySold, purchased"
   };
 
@@ -133,6 +133,7 @@ async function getByIndex(partitionKey, sortIndexKey, limit = 20) {
 };
 
 async function updateStock(changes) {
+  const marshallChanges = marshall(changes);
   const params = {
     Key: {
       "entity": {
@@ -144,7 +145,7 @@ async function updateStock(changes) {
     },
     "ExpressionAttributeValues": {
       ":changes": {
-        M: changes
+        M: marshallChanges
       }
     },
     TableName: Table,
@@ -162,7 +163,7 @@ async function updateStock(changes) {
 
 async function updateDishDelivered(sortKey, delivered) {
 
-  if (typeof partitionKey !== 'string' || typeof sortKey !== 'string') {
+  if (typeof sortKey !== 'string') {
     throw boom.conflict('No se puede ingresar ese tipo de dato')
   };
 
