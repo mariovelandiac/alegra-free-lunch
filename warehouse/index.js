@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const config = require('./../config');
-const apiRouter = require('./components/network');
+const apiRouter = require('./components/warehouse/network');
 const {logErrors, errorHandler, boomErrorHandler} = require('./../middlewares/error.handler');
 
 // uso de formatos tipo JSON

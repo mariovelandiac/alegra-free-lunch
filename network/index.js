@@ -6,7 +6,7 @@ const kitchenRouter = require('./../api/components/kitchen/network.kitchen');
 function routerApi(app) {
 
     app.get('/', (req, res) => { // endpoint documentación
-      response.sucess(req, res, 'Pide tu plato', 200)
+      response.success(req, res, 'Pide tu plato', 200)
     });
 
     app.use('/', router);

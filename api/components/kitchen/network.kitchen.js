@@ -12,7 +12,7 @@ router.get('/dish-history', dishHistory)
 async function makeDish(req, res, next) {
   try {
     const dish = await controller.makeDish();
-    response.sucess(req,res, dish, 200);
+    response.success(req,res, dish, 200);
   } catch (e) {
     next(e)
   };
@@ -21,7 +21,7 @@ async function makeDish(req, res, next) {
 async function dishQueue(req, res, next) {
   try {
     const dishQueue = await controller.getQueue();
-    response.sucess(req,res, dishQueue, 200);
+    response.success(req,res, dishQueue, 200);
   } catch (e) {
     next(e)
   };
@@ -30,7 +30,7 @@ async function dishQueue(req, res, next) {
 async function dishHistory(req, res, next) {
   try {
     const dishQueue = await controller.getHistory();
-    response.sucess(req,res, dishQueue, 200);
+    response.success(req,res, dishQueue, 200);
   } catch (e) {
     next(e)
   };
