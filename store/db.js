@@ -6,20 +6,34 @@ const client = new DynamoDBClient({
 });
 
 
-async function insert(data = {}, entity) {
-  data.entity = entity;
-  console.log(data)
+async function insertDish(data = {}, entity) {
+  const Item = {};
+  const ingredientsType = {}
+  const ingredientsArray = Object.entries(data.ingredients);
+  ingredientsArray.forEach(item => {
+    ingredientsType[item[0]] = {
+      N: item[1].toString()
+    }
+  })
+  const dataArray = Object.entries(data);
+  dataArray.forEach(item => {
+    if (typeof item[1] === 'string') {
+      Item[item[0]] = {
+        S: item[1]
+     }
+    }
+    if (typeof item[1] == 'object') {
+      Item[item[0]] = {
+        M: {...ingredientsType}
+     }
+    }
+  });
+  Item.entity = {S: entity}
   const params = {
     TableName: Table,
-    Item: {
-      entity: {
-        S: 'dish'
-      },
-      id: {
-        S: 'test'
-      }
-    }
+    Item: {...Item}
   };
+  console.log(params.Item.ingredients)
   try {
     const command = new PutItemCommand(params);
     const response = await client.send(command);
@@ -30,5 +44,5 @@ async function insert(data = {}, entity) {
 };
 
 module.exports = {
-  insert
+  insert: insertDish
 }
