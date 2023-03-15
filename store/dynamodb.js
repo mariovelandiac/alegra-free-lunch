@@ -42,11 +42,12 @@ async function list(partitionKey, limit = 20) {
       }
     },
     ExpressionAttributeNames: {
-      "#name": "name"
+      "#name": "name",
+      "#id": "id"
     },
     KeyConditionExpression: "entity = :pk",
     Limit: limit,
-    ProjectionExpression: "#name, ingredients, delivered, createdAt, quantitySold, purchased"
+    ProjectionExpression: "#name, #id, ingredients, delivered, createdAt, quantitySold, purchased"
   };
 
   const command = new QueryCommand(params);
