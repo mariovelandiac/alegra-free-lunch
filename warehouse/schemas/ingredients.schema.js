@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-
+const entity = Joi.string();
 const id = Joi.string();
 const name = Joi.string()
 const cheese = Joi.number().integer();
@@ -14,10 +14,11 @@ const potato = Joi.number().integer();
 const rice = Joi.number().integer();
 const tomato = Joi.number().integer();
 const delivered = Joi.string();
-const createdAt = Joi.date();
+const createdAt = Joi.string();
 
 
 const getIngredientsSchema = Joi.object({
+  entity: entity.required(),
   id: id.required(),
   name: name.required(),
   ingredients: {

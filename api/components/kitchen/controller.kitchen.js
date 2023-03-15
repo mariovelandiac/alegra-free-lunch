@@ -2,9 +2,8 @@ const fetch = require('node-fetch');
 const config = require('./../../../config');
 const Dish = require('../../utils/create.random.dish');
 const boom = require('@hapi/boom');
-const DISH_TABLA = 'dishQueue';
-const DISH_HISTORY = 'dishHistory';
-const storedb = require('./../../../store/db')
+const DISH_ENTITY = 'Dish';
+
 
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
 function controller(injectedStore) {
@@ -17,19 +16,17 @@ function controller(injectedStore) {
 
     const newDish = new Dish(); // se crea una instancia de la clase plato
     await newDish.create(); // creación del nuevo plato
-    // Plato almacenado en cola de platos pendientes
-    await writeDishToQueue(newDish);
+    // Plato creado y alamacenado
+    await writeDishToHistory(newDish);
 
     // Petición a Warehouse
     const {error, status, body} = await getIngredientsOnWarehouse(newDish);
 
+    const isValid = validateResponse(error, status, body);
 
-    const valid = validateResponse(error, status, body);
-
-    if (valid) {
+    if (isValid) {
       const dish = cook(newDish.name); // se cocinan los ingredientes
-      await removeDishFromQueue(newDish); // se elimina de la lista de pedidos pendeinte
-      await writeDishToHistory(newDish); // se guarda el plato en el historial
+      await updateDish(newDish); // se guarda el plato en el historial
       return {
         dish,
       };
@@ -37,12 +34,12 @@ function controller(injectedStore) {
   };
 
   async function getQueue() {
-    const queue = await store.list(DISH_TABLA);
+    const queue = await store.getByIndex(DISH_ENTITY, 'f');
     return queue
   };
 
   async function getHistory() {
-    const queue = await store.list(DISH_HISTORY);
+    const queue = await store.list(DISH_ENTITY);
     return queue
   };
 
@@ -70,28 +67,13 @@ function controller(injectedStore) {
 
   };
 
-  async function removeDishFromQueue (dish) {
-    setTimeout(async () => {
-      const response = await store.remove(DISH_TABLA, dish.id);
-      if (!response) {
-        throw boom.conflict('No se ha podido elimina de la lista, DB')
-      };
-    }, 5000)
-  };
-
-  async function writeDishToQueue(dish) {
-    const dishToQueue = {...dish};
-    const response = await store.insert(DISH_TABLA, dishToQueue);
-    const response2 = await storedb.insert(dishToQueue, 'dish');
-    console.log(response2)
-    if (!response) {
-      return false
-    };
-  };
-
   async function writeDishToHistory(dish) {
+    await store.insert(dish);
+  };
+
+  async function updateDish(dish) {
     dish.deliver();
-    await store.insert(DISH_HISTORY, dish);
+    await store.updateDishDelivered(dish.id, dish.delivered);
   };
 
   function validateResponse(error, status, body) {

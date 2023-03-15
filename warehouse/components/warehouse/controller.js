@@ -1,7 +1,10 @@
 const boom = require('@hapi/boom');
 const OrderIngredient = require('../../utils/order.ingredient');
-const STOCK_TABLE = 'stock';
-const ORDERS_TABLE = 'ordersToMarket';
+const STOCK_ENTITY = 'Stock';
+const STOCK_ID = 'v1';
+const ORDERS_ENTITY = 'OrderIngredient';
+const config = require('./../../../config/index')
+
 
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
 function controller(injectedStore) {
@@ -14,10 +17,12 @@ function controller(injectedStore) {
   async function getIngredients(dish) {
     // stock regresa un objeto literal con la cantidad restante de los ingredientes en la bodega en caso de ser suficiente, lack retorna en un array los faltantes en caso de que así sea
     let {stock, lack} = await seekIngredients(dish.ingredients);
+    // aqui voy, el problema básicament es que stock no es un stock sino un remaining y el available vendría siendo el stock actual, es necesario hacer la "resta"
     // En caso de que no haga falta comprar ingredientes
     if (lack.length === 0) {
+      console.log(stock)
       await validateStock(stock);
-      const response = await store.update(STOCK_TABLE, stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
+      const response = await store.updateStock(stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
       return response
     } else {
       // newIngredient es un objeto con las compras realizadas al marketplace
@@ -28,24 +33,26 @@ function controller(injectedStore) {
         ...newStock
       };
       await validateStock(stock);
-      const response = await store.update(STOCK_TABLE, stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
+      const response = await store.updateStock(stock); // se actualiza la base de datos con el stock despues de obtener los ingredientes
       return response
     };
   };
 
   async function getStock() {
-    const stock = await store.list(STOCK_TABLE);
+    const stock = await store.get(STOCK_ENTITY, STOCK_ID);
     return stock
   };
 
   async function getOrders() {
-    const orders = await store.list(ORDERS_TABLE);
+    const orders = await store.list(ORDERS_ENTITY);
     return orders
   };
 
   async function seekIngredients(ingredients) {
     // buscar en la bodega los disponibles
-    const available = await store.list(STOCK_TABLE);
+
+    const response = await store.get(STOCK_ENTITY, STOCK_ID);
+    const available = response.stock
     const name = Object.keys(ingredients);
     const value = Object.values(ingredients);
     let lack = [];
@@ -66,6 +73,7 @@ function controller(injectedStore) {
     // stock es un objeto literal con los items restantes tras consumirlos
     // lack es un array con los faltantes para cocinar el plato
     return {
+      available,
       stock,
       lack
     };
@@ -111,6 +119,9 @@ function controller(injectedStore) {
   async function validateStock(stock) {
     const keys = Object.keys(stock);
     const values = Object.values(stock);
+    if (keys.length !== config.ingredients.max) {
+      throw new Error('La dimensión del stock se ha modificado');
+    }
     keys.forEach(item => {
       if (typeof item !== 'string') {
         throw new Error('Algo ha ocurrido con el stock');

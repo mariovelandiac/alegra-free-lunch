@@ -3,11 +3,11 @@ const boom = require('@hapi/boom');
 const fetch = require('node-fetch');
 const config = require('../../config');
 const marketPlaceUrl = config.marketPlace.url;
-const ORDERS_TABLE = 'ordersToMarket';
-const store = require('../../store/dummy');
+const store = require('../../store/dynamodb');
 
 class OrderIngredient {
   constructor(name, dishId) {
+    this.entity = 'OrderIngredient';
     this.id = v4();
     this.name = name;
     this.quantitySold;
@@ -19,7 +19,7 @@ class OrderIngredient {
 
   async _init() {
     await this.marketPlace();
-    await this.updateOnDB(store)
+    await this.insertOnDB(store)
   };
 
   async marketPlace() {
@@ -49,7 +49,7 @@ class OrderIngredient {
     if (response.status === 500) {
       this.status = response.status;
       this.purchased = false;
-      throw boom.internal('No se puede establecer conexión con la plaza de mercado')
+      throw boom.internal('No se puede esENTITYcer conexión con la plaza de mercado')
     };
 
     if (response.status === 404) {
@@ -63,8 +63,8 @@ class OrderIngredient {
     };
   };
 
-  async updateOnDB(store) {
-    await store.update(ORDERS_TABLE, this);
+  async insertOnDB(store) {
+    await store.insert(this);
   };
 
 };

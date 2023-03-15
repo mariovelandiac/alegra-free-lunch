@@ -7,6 +7,12 @@ const config = {
     marketPlace: {
       url: process.env.MARKETPLACE_URL
     },
+    ingredients: {
+      max: process.env.INGREDIENTS_MAX || 10
+    },
+    menu: {
+      max: process.env.MENU_MAX || 6
+    },
     warehouse: {
       host: process.env.WAREHOUSE_HOST || 'http://localhost',
       port: process.env.WAREHOUSE_PORT || 3001,
@@ -14,7 +20,9 @@ const config = {
     },
     aws: {
       accessKey: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      tableName: process.env.AWS_TABLE_NAME,
+      region: process.env.AWS_REGION
     }
 }
 
