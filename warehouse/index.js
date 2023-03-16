@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const config = require('./config');
-const apiRouter = require('./network/');
+const routerApi = require('./network/');
 const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
 
 // uso de formatos tipo JSON
@@ -23,7 +23,7 @@ const options = {
 app.use(cors(options));
 
 // rutas
-app.use(apiRouter);
+routerApi(app);
 
 // middelware de errores
 app.use(logErrors);
@@ -32,5 +32,7 @@ app.use(errorHandler);
 
 
 app.listen(config.port, () => {
-  console.log(`Bodega escuchando en el puerto ${config.port}`)
+  if (!config.isProd) {
+     console.log(`Bodega escuchando en el puerto ${config.port}`)
+  };
 })

@@ -32,5 +32,7 @@ app.use(errorHandler);
 
 // Se le levanta la api de la cocina en el puerto dado por el archivo de configuración
 app.listen(config.port, () => {
-    console.log(`kitchen-api listening on port ${config.port}`)
+    if (!config.isProd) {		
+    	console.log(`kitchen-api listening on port ${config.port}`)
+    };
 });
