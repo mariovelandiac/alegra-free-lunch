@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const response = require('../../../network/response');
+const response = require('./../network/response');
 const controller = require('./index');
 
 router.get('/make-dish', makeDish);
@@ -29,7 +29,8 @@ async function dishQueue(req, res, next) {
 
 async function dishHistory(req, res, next) {
   try {
-    const dishQueue = await controller.getHistory();
+    const {limit} = req.query;
+    const dishQueue = await controller.getHistory(limit);
     response.success(req,res, dishQueue, 200);
   } catch (e) {
     next(e)

@@ -1,9 +1,9 @@
 const express = require('express'); // importación de express
 const app = express(); // aplicación de express
 app.use(express.json()); // habilitamos uso de JSON
-const config = require('./../config'); // archivo de configuración
-const routerApi = require('../network'); // router de la api de kitchen
-const {logErrors, errorHandler, boomErrorHandler} = require('./../middlewares/error.handler');
+const config = require('./config'); // archivo de configuración
+const routerApi = require('./network'); // router de la api de kitchen
+const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
 // router
 routerApi(app);
 

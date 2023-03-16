@@ -1,7 +1,7 @@
 const {v4} = require('uuid');
-const store = require('./../../store/dynamodb');
-const pkMenu = 'menu';
-const config = require('./../../config/index')
+const store = require('./../store/dynamodb');
+const MENU_ENTITY = 'menu';
+const config = require('./../config')
 
 class Dish {
   constructor() {
@@ -55,7 +55,7 @@ class Menu {
   };
 
   async chooseDish(randomNumber) {
-    const dish = await store.get(pkMenu, randomNumber.toString())
+    const dish = await store.get(MENU_ENTITY, randomNumber.toString())
     return dish;
   };
 };

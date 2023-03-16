@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const response = require('./response');
-const kitchenRouter = require('./../api/components/kitchen/network.kitchen');
+const kitchenRouter = require('./../components/network.kitchen');
 
 function routerApi(app) {
 
     app.get('/', (req, res) => { // endpoint documentación
-      response.success(req, res, 'Pide tu plato', 200)
+      response.success(req, res, 'Pide tu plato en el endpoint de /kitchen/make-dish', 200)
     });
 
     app.use('/', router);

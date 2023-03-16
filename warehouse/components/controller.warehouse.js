@@ -1,9 +1,9 @@
 const boom = require('@hapi/boom');
-const OrderIngredient = require('../../utils/order.ingredient');
+const OrderIngredient = require('./order.ingredient');
 const STOCK_ENTITY = 'Stock';
 const STOCK_ID = 'v1';
 const ORDERS_ENTITY = 'OrderIngredient';
-const config = require('./../../../config/index')
+const config = require('./../config')
 
 
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
@@ -42,8 +42,8 @@ function controller(injectedStore) {
     return stock
   };
 
-  async function getOrders() {
-    const orders = await store.list(ORDERS_ENTITY);
+  async function getOrders(limit) {
+    const orders = await store.list(ORDERS_ENTITY, parseInt(limit));
     return orders
   };
 

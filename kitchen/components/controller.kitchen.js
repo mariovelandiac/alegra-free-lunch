@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
-const config = require('./../../../config');
-const Dish = require('../../utils/create.random.dish');
+const config = require('../config');
+const Dish = require('./random.dish');
 const boom = require('@hapi/boom');
 const DISH_ENTITY = 'Dish';
 
@@ -38,8 +38,8 @@ function controller(injectedStore) {
     return queue
   };
 
-  async function getHistory() {
-    const queue = await store.list(DISH_ENTITY);
+  async function getHistory(limit) {
+    const queue = await store.list(DISH_ENTITY, parseInt(limit));
     return queue
   };
 

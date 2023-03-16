@@ -1,22 +1,16 @@
-require('dotenv').config();
+require('dotenv').config({path:__dirname+'/./../.env'});
 
 const config = {
     env: process.env.NODE_ENV || 'dev',
     isProd: process.env.NODE_ENV === 'production',
-    port: process.env.PORT || 3000,
+    port: process.env.PORT || 3001,
+    host: process.env.HOST || 'http://localhost',
+    apiKey: process.env.WAREHOUSE_API_KEY,
     marketPlace: {
       url: process.env.MARKETPLACE_URL
     },
     ingredients: {
       max: process.env.INGREDIENTS_MAX || 10
-    },
-    menu: {
-      max: process.env.MENU_MAX || 6
-    },
-    warehouse: {
-      host: process.env.WAREHOUSE_HOST || 'http://localhost',
-      port: process.env.WAREHOUSE_PORT || 3001,
-      key: process.env.WAREHOUSE_KEY
     },
     aws: {
       accessKey: process.env.AWS_ACCESS_KEY_ID,

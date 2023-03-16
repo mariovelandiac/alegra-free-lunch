@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const config = require('./../config');
-const apiRouter = require('./components/warehouse/network');
-const {logErrors, errorHandler, boomErrorHandler} = require('./../middlewares/error.handler');
+const config = require('./config');
+const apiRouter = require('./components/network.warehouse');
+const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
 
 // uso de formatos tipo JSON
 app.use(express.json());
@@ -16,6 +16,6 @@ app.use(boomErrorHandler);
 app.use(errorHandler);
 
 
-app.listen(config.warehouse.port, () => {
-  console.log(`Bodega escuchando en el puerto ${config.warehouse.port}`)
+app.listen(config.port, () => {
+  console.log(`Bodega escuchando en el puerto ${config.port}`)
 })

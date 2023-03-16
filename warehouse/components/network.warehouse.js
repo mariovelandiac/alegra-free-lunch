@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router(); // router
-const response = require('./../../../network/response'); // respuestas de la api
+const response = require('./../network/response'); // respuestas de la api
 const controller = require('./index'); // conexión a base de datos
-const {checkApiKey} = require('../../../middlewares/auth.handler');
-const validatorHandler = require('../../../middlewares/validator.handler');
-const getIngredientsSchema = require('./../../schemas/ingredients.schema')
+const {checkApiKey} = require('./../middlewares/auth.handler');
+const validatorHandler = require('./../middlewares/validator.handler');
+const getIngredientsSchema = require('./../schemas/ingredients.schema');
 
 router.post('/get-ingredients',
 validatorHandler(getIngredientsSchema, 'body'), // validacion de datos entrantes para asegurar el funcionamiento del microservicio
@@ -34,7 +34,8 @@ async function getIngredients(req, res, next) {
 
 async function ordersHistory(req, res, next) {
   try {
-    const orders = await controller.getOrders();
+    const {limit} = req.query;
+    const orders = await controller.getOrders(limit);
     response.success(req, res, orders, 200);
   } catch (e) {
     next(e)

@@ -1,9 +1,9 @@
 const {v4} = require('uuid');
 const boom = require('@hapi/boom');
 const fetch = require('node-fetch');
-const config = require('../../config');
+const config = require('./../config');
 const marketPlaceUrl = config.marketPlace.url;
-const store = require('../../store/dynamodb');
+const store = require('./../store/dynamodb');
 
 class OrderIngredient {
   constructor(name, dishId) {
