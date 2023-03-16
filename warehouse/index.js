@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const config = require('./config');
-const apiRouter = require('./components/network.warehouse');
+const apiRouter = require('./network/');
 const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
 
 // uso de formatos tipo JSON
