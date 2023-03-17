@@ -1,0 +1,11 @@
+{
+  "name": "app-alegra-test",
+  "version": "1.0.0",
+  "description": "Interfaz gráfica para la creación de platos automaticos",
+  "main": "assets/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mario Velandia Ciendúa <mariovelandiac>",
+  "license": "MIT"
+}
