@@ -1,26 +1,17 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const config = require('./config');
 const routerApi = require('./network/');
+const cors = require('cors');
 const {logErrors, errorHandler, boomErrorHandler} = require('./middlewares/error.handler');
 
+const options = {
+  origin: '*'
+};
+
+app.use(cors(options));
 // uso de formatos tipo JSON
 app.use(express.json());
-
-// Cors
-// array preparado para ingresar IPS de dominios permitidos para hacer peticiones. Por caso de uso, se deja abierta la API
-const whitelist = [];
-const options = {
-  origin: (origin, cb) => {
-    if (whitelist.includes(origin) || !origin) {
-      cb(null, true)
-    } else {
-      cb(new Error("domain not allowed"))
-    };
-  }
-};
-app.use(cors(options));
 
 // rutas
 routerApi(app);
