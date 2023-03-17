@@ -3,6 +3,8 @@ const config = require('../config');
 const Dish = require('./random.dish');
 const boom = require('@hapi/boom');
 const DISH_ENTITY = 'Dish';
+const MENU_ENTITY = 'menu';
+
 
 
 // Se le inyecta un store al controller para que pueda cambiar de db fácilmente
@@ -40,6 +42,11 @@ function controller(injectedStore) {
 
   async function getHistory(limit) {
     const queue = await store.list(DISH_ENTITY, parseInt(limit));
+    return queue
+  };
+
+  async function getMenu(limit) {
+    const queue = await store.list(MENU_ENTITY, parseInt(limit));
     return queue
   };
 
@@ -104,7 +111,8 @@ function controller(injectedStore) {
   return {
     makeDish,
     getQueue,
-    getHistory
+    getHistory,
+    getMenu
   }
 };
 
