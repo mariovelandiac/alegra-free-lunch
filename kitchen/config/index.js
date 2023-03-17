@@ -8,8 +8,7 @@ const config = {
       max: process.env.MENU_MAX || 6
     },
     warehouse: {
-      host: process.env.WAREHOUSE_HOST || 'http://localhost',
-      port: process.env.WAREHOUSE_PORT || 3001,
+      url: process.env.WAREHOUSE_URL,
       key: process.env.WAREHOUSE_KEY
     },
     aws: {

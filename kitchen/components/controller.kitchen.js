@@ -48,7 +48,7 @@ function controller(injectedStore) {
   };
 
   async function getIngredientsOnWarehouse(dish) {
-    const warehouseURL = `${config.warehouse.host}:${config.warehouse.port}/api/warehouse/get-ingredients`;
+    const warehouseURL = `${config.warehouse.url}/api/warehouse/get-ingredients`;
     const params = {
       method: 'POST',
       headers: {
