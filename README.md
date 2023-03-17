@@ -1,5 +1,6 @@
 # Prueba Técnica Realiza para Alegra #
 Para esta prueba, se desarrolló una REST API basada en microservicios, corriendo en la nube de AWS y usando DynamoDB para persistir los datos; se útlizo el patrón de diseño Model-View-Controller para gestiónar las rutas, lo controladores y los datos retonardos a los clientes de forma óptima y escalable
+
 ## Links 🔗 ##
 A continuación, se listan los links de servicio de la API y de la interfaz gráfica
 1. API: *https://1dobvidpv4.execute-api.sa-east-1.amazonaws.com/alegra-test*
@@ -61,13 +62,34 @@ Nota: El parametro limit puede ser ingresado como un parametro query para limita
 1. Consulta a base de datos por la entidad Stock
 2. Retorna la lista al cliente
 
-####
+
 Nota: Para el cliente es transparente la infraestructura de los microservicios
+
 ## Microservicios 🐳 ##
-### kitchen 🍳 ###
-#### env 🧪####
-### warehouse 🏠 ###
-#### env 🧪####
+Como se menciona anteriormente, la arquitectura de la REST API está basada en microservicios corriendo en contenedores Docker, al interior de las rutas de cada microservicio se encuentra el archivo Dockerfile y el archivo .dockerignore para cada microservicio.
+
+Para el funcionamiento de cada microservicio, es necesario inyectar a cada contenedor las variables de entorno necesarias, ya que éstas no se encuentran alojadas al interior de las imagenes Docker. 
+**Las variables de entorno requeridas se listan a continuación**
+### [kitchen] env 🧪###
+1. PORT=*Puerto donde va a estar escuchando peticiones el contenedor*
+2. WAREHOUSE_URL=*URL del microservicio de la bodega*
+3. WAREHOUSE_KEY=*Clave para poder hacer las peticiones al microservicio de la bodega*
+4. MENU_MAX=*Máximo número de platos ofrecidos en el menu. Para le presenté reto fueron 6*
+5. AWS_ACCESS_KEY_ID=*Identificador de un rol de AWS con políticas de acceso a DynamoDB*
+6. AWS_SECRET_ACCESS_KEY=*Clave del rol para realizar las peticiones a la base de datos con el paquete de aws-sdk v3*
+7. AWS_TABLE_NAME=*Nombre de la tabla de DynamoDB*
+8. AWS_REGION=*Región de AWS en donde se encuentra la base de datos*
+
+### [warehouse] env 🧪###
+1. PORT=*Puerto donde va a estar escuchando peticiones el contenedor*
+2. WAREHOUSE_API_KEY=*Clave de la API del microservicio*
+3. MARKETPLACE_URL=*URL de la plaza de mercado*
+4. INGREDIENTS_MAX=*Máximo número de ingredientes utilizados, para el caso del reto fueron 10*
+5. AWS_ACCESS_KEY_ID=*Identificador de un rol de AWS con políticas de acceso a DynamoDB*
+6. AWS_SECRET_ACCESS_KEY=*Clave del rol para realizar las peticiones a la base de datos con el paquete de aws-sdk v3*
+7. AWS_TABLE_NAME=*Nombre de la tabla de DynamoDB*
+8. AWS_REGION=*Región de AWS en donde se encuentra la base de datos*
+
 ## Base de Datos ⚙ ##
 #### Stock ####
 #### menu ####
