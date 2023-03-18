@@ -1,4 +1,4 @@
-# Prueba Técnica Realiza para Alegra #
+# Prueba Técnica Realizada para Alegra #
 Para esta prueba, se desarrolló una REST API basada en microservicios, corriendo en la nube de AWS y usando DynamoDB para persistir los datos; se útlizo el patrón de diseño Model-View-Controller para gestiónar las rutas, lo controladores y los datos retonardos a los clientes de forma óptima y escalable
 
 ## Links 🔗 ##
