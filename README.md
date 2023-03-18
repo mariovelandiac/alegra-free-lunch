@@ -91,6 +91,111 @@ Para el funcionamiento de cada microservicio, es necesario inyectar a cada conte
 8. AWS_REGION=*Región de AWS en donde se encuentra la base de datos*
 
 ## Base de Datos ⚙ ##
-#### Stock ####
-#### menu ####
+La base de datos escogida para llevar a cabo el reto fue DynamoDB, base de datos administrada por AWS. DynamoDB es una base de datos NoSQL de tipo clave-valor, que proporciona alto rendimiento, escalabilidad y disponibilidad.
+Esta base de datos su clave única está compuesta por una Partition Key [PK] y una Sort Key [SK], en conjunto, forman un valor único, al cual se le atribuye una serie de atributos, que no necesariamente son consistentes entre items de la tabla.
+Para el presente reto, la arquitectura de la base de datos es la siguiente
+#### Partition Key ####
+La patition key escogida es llamada [entity] y corresponse con cualquier entidad que pueda existir en la lógica de negocio, en este caso, la entidades disponibles son:
+1. Dish: corresponde a las solicitudes de platos generadas a la cocina
+2. OrderIngredient: corresponde a las órdenes de compra exitosas realizadas a la plaza de mercado
+3. Stock: corresponde al stock de la bodega
+4. menu: corresponde a los platos disponibles en el menu
+5. Es de tipo String
+
+#### Sort Key ####
+Junto con la partition key, la sort key hace de cada item un elemento único en la base de datos. La sort key escogida para el presente reto es: [id]
+1. Debe ser único para todas las entidades
+2. Es de tipo String
+
+#### Local Secundary Index ####
+El local secundary index en una base de datos DynamoDB permite cambiar la sort key por un atributo deseado, para el presente caso, se crea un local secundary index que apunta hacia el atributo [delivered], con el fin de hacer querys eficientes al momento de consultar por los platos aún no entregados
+#### Inicializar base de datos ####
+Para poder recrear el reto con cualquier otra base de datos de tipo Dynamo DB es necesario inicializar las entidades Stock y menu, en las cuales se va a alojar el Stock inicial y los platos que se van a ofrecer en el menú, respectivamente. A continuación se muestra un JSON para inicializar el Stock y para inicializar un plato del menú (los demás seguirán el mismo patrón)
+##### Stock #####
+{
+  "entity": {
+    "S": "Stock"
+  },
+  "id": {
+    "S": "v1"
+  },
+  "stock": {
+    "M": {
+      "cheese": {
+        "N": "5"
+      },
+      "chicken": {
+        "N": "5"
+      },
+      "ketchup": {
+        "N": "5"
+      },
+      "lemon": {
+        "N": "5"
+      },
+      "lettuce": {
+        "N": "5"
+      },
+      "meat": {
+        "N": "5"
+      },
+      "onion": {
+        "N": "5"
+      },
+      "potato": {
+        "N": "5"
+      },
+      "rice": {
+        "N": "5"
+      },
+      "tomato": {
+        "N": "5"
+      }
+    }
+  }
+}
+
+##### menu #####
+
+{
+  "entity": {
+    "S": "menu"
+  },
+  "id": {
+    "S": "0"
+  },
+  "ingredients": {
+    "M": {
+      "cheese": {
+        "N": "2"
+      },
+      "chicken": {
+        "N": "1"
+      },
+      "onion": {
+        "N": "1"
+      },
+      "potato": {
+        "N": "2"
+      }
+    }
+  },
+  "name": {
+    "S": "Pollo al Gratín"
+  }
+}
+
 ## Deploy 🎇 ##
+Para realizar el Deploy de la API REST y la Interfaz gráfica se llevaron a cabo lo siguientes pasos, a saber
+1. Build de las imagenes Docker a desplegar por cada microservicio
+2. Registro de dichas imagenes en AWS ECR, el registro de imagenes docker de AWS, en un repositorio privado
+3. Creación de un Cluster en ECS, el servicio de contenedores elásticos de AWS
+4. Asignación de tareas para cada imagen registrada en ECR (cada tarea corresponde con un microservicio)
+5. Creación de servicios en el Cluster creado anteriormente, asignado a cada servicio una nueva tarea. Cada servicio aloja a 2 replicas de cada tarea, para garatizar disponibildad de los microservicios. Dichos servicios utilizan AWS Fargate para su funcionamiento
+6. Asignación de un Application Load Balancer [ALB] para los servicios, con el fin de garantizar escalabilidad y funcionamiento de la REST API
+7. Creación y asignación de un Network Load Balancer [NLB] para recibir las peticiones entrantes desde internet. El NLB se conecta directamente con el ALB
+8. Creación y asignación de una REST API de enrutamiento en AWS API Gateway. Este API se conecta directamente con el NLB, con el fin de direccionar las peticiones entrantes desde la web al NLB
+9. Deploy de la interfaz gráfica en AWS S3
+
+# Fin #
+*mariovelandiac*
