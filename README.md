@@ -45,10 +45,11 @@ Nota: Para el cliente es transparente la división en microservicios de la cocin
 1. Consulta en la base de datos del stock disponible
 2. Comparación entre el stock disponible y los ingredientes solicitados
 3. En caso de haber défict en alguno de los ingredientes, el controlador inicia una orden de compra de dicho ingrediente a la plaza de mercado
-4. Si la cantidad comprada es igual a cero o es inferior a la cantidad requerida por el pedido, el controlador repite la petición las veces que sea necesaria (acumulando los valores comprados anteriormente)
-6. Si la cantidad comprada a la plaza de mercado es al menos igual a la requerida, se termina la orden de compra, marcandose como éxitosa y se guarda en la base de datos
-5. Si la cantidad comprada es superior, el controlador guarda en el stock el restante
-7. Se actualiza la base de datos con la entidad Stock y el id v1, que corresponde con el stock de la bodega en la base de datos
+4. Si la cantidad comprada es igual a cero, el controlador repite la petición las veces que sea necesaria (hasta que quantitySold sea diferente de cero)
+5. Si la cantiadad comprada a la plaza de mercado es inferior a la cantidad requerida por el pedido, el controlador repite el punto 3. hasta que la cantidad comprada (acumulada) sea al menos igual a la cantidad requerida para preparar el plato
+6. Si la cantidad comprada a la plaza de mercado es al menos igual a la requerida, se termina la orden de compra, marcandose como éxitosa y guardándose en la base de datos
+5. Si la cantidad comprada es superior a la requerida, el controlador guarda en el stock el restante
+7. Se actualiza la base de datos con la entidad Stock y el id="v1", que corresponde con el stock de la bodega en la base de datos
 8. Retorna los ingredientes solicitados a la cocina
 
 *Importante*: Este endpoint require una ApiKey para poder hacer la solicitud, cargada en los headers de la solicitud del microservicio de la cocina. Además, el microservicio de la bodega sólo recibira pedidos de los ingredientes registrados en el presente reto
