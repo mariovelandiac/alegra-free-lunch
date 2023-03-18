@@ -94,7 +94,7 @@ Para el funcionamiento de cada microservicio, es necesario inyectar a cada conte
 La base de datos escogida para llevar a cabo el reto fue DynamoDB, base de datos administrada por AWS. DynamoDB es una base de datos NoSQL de tipo clave-valor, que proporciona alto rendimiento, escalabilidad y disponibilidad.
 Esta base de datos su clave única está compuesta por una Partition Key [PK] y una Sort Key [SK], en conjunto, forman un valor único, al cual se le atribuye una serie de atributos, que no necesariamente son consistentes entre items de la tabla.
 Para el presente reto, la arquitectura de la base de datos es la siguiente
-#### Partition Key ####
+#### 🗝 Partition Key ####
 La patition key escogida es llamada [entity] y corresponse con cualquier entidad que pueda existir en la lógica de negocio, en este caso, la entidades disponibles son:
 1. Dish: corresponde a las solicitudes de platos generadas a la cocina
 2. OrderIngredient: corresponde a las órdenes de compra exitosas realizadas a la plaza de mercado
@@ -102,7 +102,7 @@ La patition key escogida es llamada [entity] y corresponse con cualquier entidad
 4. menu: corresponde a los platos disponibles en el menu
 5. Es de tipo String
 
-#### Sort Key ####
+#### 🗝 Sort Key ####
 Junto con la partition key, la sort key hace de cada item un elemento único en la base de datos. La sort key escogida para el presente reto es: [id]
 1. Debe ser único para todas las entidades
 2. Es de tipo String
