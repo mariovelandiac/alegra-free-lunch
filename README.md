@@ -1,11 +1,6 @@
 # Prueba Técnica Realizada para Alegra #
 Para esta prueba, se desarrolló una REST API basada en microservicios, corriendo en la nube de AWS y usando DynamoDB para persistir los datos; se útlizo el patrón de diseño Model-View-Controller para gestiónar las rutas, lo controladores y los datos retonardos a los clientes de forma óptima y escalable
 
-## Links 🔗 ##
-A continuación, se listan los links de servicio de la API y de la interfaz gráfica
-1. API: *https://1dobvidpv4.execute-api.sa-east-1.amazonaws.com/alegra-test*
-2. Interfaz Gráfica: *http://alegra-test-interface.s3-website-sa-east-1.amazonaws.com*
-3. 
 ## Endpoints 💻 ##
 La arquitectura de la REST API está basada en microservicios, que serán descritos posteriormente, estos son: **kitchen** y **warehouse**, los endpoints para cada uno de ellos se listan a continuación
 ### La cocina 🍳 [kitchen] ###
